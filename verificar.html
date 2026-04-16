@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificar Acesso</title>
+    <style>
+        body { font-family: sans-serif; background: #e9ecef; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: monospace; }
+        button { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background: #2980b9; }
+        .error { color: #e74c3c; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>Chave de Acesso</h2>
+        <p>Insira seu token para desbloquear o sistema:</p>
+        <input type="text" id="tokenInput" placeholder="Cole seu token aqui...">
+        <button onclick="validarAcesso()">Acessar Sistema</button>
+        <p id="errorMessage" class="error">Token inválido ou inexistente!</p>
+    </div>
+
+    <script>
+        function validarAcesso() {
+            const inputVal = document.getElementById("tokenInput").value.trim();
+            const tokenSalvo = localStorage.getItem("token");
+
+            if (inputVal === tokenSalvo && tokenSalvo !== null) {
+                // Se o token bater, redireciona para o sistema
+                window.location.href = "sistema.html";
+            } else {
+                // Se estiver errado, mostra erro
+                document.getElementById("errorMessage").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      width: 320px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .senha-container {
+      position: relative;
+    }
+
+    .olho {
+      position: absolute;
+      right: 10px;
+      top: 30px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #007bff;
+      user-select: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background: #28a745;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    .erro {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .sucesso {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Cadastro</h2>
+
+  <label for="nome">Nome completo</label>
+  <input type="text" id="nome">
+
+  <label for="email">E-mail</label>
+  <input type="email" id="email">
+
+  <label for="cargo">Cargo</label>
+  <select id="cargo">
+    <option value="">Selecione o cargo</option>
+    <option>Administrador</option>
+    <option>Gerente</option>
+    <option>Funcionário</option>
+    <option>Estagiário</option>
+    <option>Aprendix</option>
+  </select>
+
+  <div class="senha-container">
+    <label for="senha">Senha</label>
+    <input type="password" id="senha">
+    <span class="olho" onclick="toggleSenha('senha', this)"></span>
+  </div>
+
+  <div class="senha-container">
+    <label for="confirmarSenha">Confirmar senha</label>
+    <input type="password" id="confirmarSenha">
+    <span class="olho" onclick="toggleSenha('confirmarSenha', this)"></span>
+  </div>
+
+  <button onclick="cadastrar()">Cadastrar</button>
+
+  <p id="mensagem"></p>
+</div>
+
+<script>
+  function toggleSenha(id, elemento) {
+    const campo = document.getElementById(id);
+
+    if (campo.type === "password") {
+      campo.type = "text";
+      elemento.textContent = "Ocultar";
+    } else {
+      campo.type = "password";
+      elemento.textContent = "Mostrar";
+    }
+  }
+
+  function emailValido(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  function cadastrar() {
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const cargo = document.getElementById("cargo").value;
+    const senha = document.getElementById("senha").value;
+    const confirmarSenha = document.getElementById("confirmarSenha").value;
+    const mensagem = document.getElementById("mensagem");
+    const botao = document.querySelector("button");
+
+    mensagem.innerHTML = "";
+    mensagem.className = "";
+
+    if (!nome || !email || !cargo || !senha || !confirmarSenha) {
+      mensagem.innerHTML = "Preencha todos os campos!";
+      mensagem.className = "erro";
+      return;
+    }
+  
+    if (!emailValido(email)) {
+      mensagem.innerHTML = "Digite um e-mail válido!";
+      mensagem.className = "erro";
+      return;
+    }
+
+    const senhaForte = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+    if (!senhaForte.test(senha)) {
+      mensagem.innerHTML = "A senha deve ter letras e números.";
+      mensagem.className = "erro";
+      return;
+    }
+    if (senha.length < 6) { mensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres."; mensagem.className = "erro"; return;
+
+    if (senha !== confirmarSenha) {
+      mensagem.innerHTML = "As senhas não coincidem!";
+      mensagem.className = "Erro";
+      return;
+      
+    }
+
+    botao.disabled = true;
+
+    const usuario = {
+      nome,
+      email,
+      cargo,
+      senha
+    };
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+
+    mensagem.innerHTML = "Cadastro realizado com sucesso!";
+    mensagem.className = "sucesso";
+
+    document.getElementById("nome").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("cargo").value = "";
+    document.getElementById("senha").value = "";
+    document.getElementById("confirmarSenha").value = "";
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
+  }
+}
+</script>
+</body>
+</html>

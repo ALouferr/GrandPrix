@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+
+</head>
+<link rel="stylesheet" href="Style.css">
+<body>
+
+    <div class="container">
+        <h2>Login</h2>
+
+        <form id="loginForm">
+            <label for="id_user">ID</label>
+            <input type="number" id="id_user" required>
+
+            <label for="name">Nome</label>
+            <input type="text" id="name" required>
+
+            <label for="position">Cargo</label>
+            <input type="text" id="position" required>
+
+            <label for="position">Senha</label>
+            <input type="password" id="position" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <div class="footer">
+            <p>Não tem conta? <a href="#">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <div id="tokenModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="modal-header">
+            <h3>Login Realizado!</h3>
+            <p>Seu token de acesso foi gerado com sucesso.</p>
+        </div>
+        <div class="token-container">
+            <code id="tokenText">---</code>
+            <button onclick="copyToken()" class="copy-btn">Copiar</button>
+        </div>
+    </div>
+</div>
+    <script>
+ const loginForm = document.getElementById("loginForm");
+const modal = document.getElementById("tokenModal");
+const tokenText = document.getElementById("tokenText");
+const closeBtn = document.querySelector(".close-btn");
+
+loginForm.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    // Capturando os dados (Atenção: mudei o ID da senha no seu HTML para 'password')
+    const id = document.getElementById("id_user").value;
+    const nome = document.getElementById("name").value;
+    const cargo = document.getElementById("position").value;
+
+    try {
+        const response = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, nome, cargo })
+        });
+
+        const data = await response.json();
+
+        if (data.token) {
+            localStorage.setItem("token", data.token);
+            
+            // Inserir token no modal e mostrar
+            tokenText.innerText = data.token;
+            modal.style.display = "block";
+        }
+    } catch (error) {
+        alert("Erro ao conectar com o servidor.");
+    }
+});
+
+// Fechar o modal ao clicar no X
+closeBtn.onclick = () => modal.style.display = "none";
+
+// Fechar o modal ao clicar fora dele
+window.onclick = (event) => {
+    if (event.target == modal) modal.style.display = "none";
+}
+
+// Função para copiar o token
+function copyToken() {
+    const text = tokenText.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Token copiado para a área de transferência!");
+    });
+}
+
+// No seu arquivo de login (index.html), altere esta parte:
+closeBtn.onclick = () => {
+    modal.style.display = "none";
+    window.location.href = "verificar.html"; // Vai para o "pedágio"
+};
+
+// E na função de fechar ao clicar fora:
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        window.location.href = "verificar.html";
+    }
+}
+</script>
+
+</body>
+</html>

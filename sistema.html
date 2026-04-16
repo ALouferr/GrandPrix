@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Sistema</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --bg: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; }
+
+        /* Sidebar */
+        .sidebar { width: 260px; height: 100vh; background: var(--primary); color: white; padding: 20px; position: fixed; }
+        .sidebar h2 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-size: 20px; }
+        .menu-item { padding: 15px; margin: 10px 0; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .menu-item:hover { background: rgba(255,255,255,0.1); }
+        .menu-item.active { background: var(--accent); }
+
+        /* Main Content */
+        .content { margin-left: 260px; padding: 30px; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* Grid de Cards */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h3 { color: #7f8c8d; font-size: 14px; margin: 0; }
+        .card p { font-size: 28px; font-weight: bold; margin: 10px 0; color: var(--primary); }
+
+        .status-badge { background: var(--success); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+        
+        .btn-exit { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-exit:hover { background: #c0392b; }
+
+        /* Esconde o conteúdo inicialmente para evitar "piscada" de tela */
+        #main-wrapper { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="main-wrapper" style="width: 100%; display: flex;">
+        <div class="sidebar">
+            <h2>SkyNet Core</h2>
+            <div class="menu-item active">Início</div>
+            <div class="menu-item">Base de Dados</div>
+            <div class="menu-item">Segurança</div>
+            <div class="menu-item">Logs do Sistema</div>
+        </div>
+
+        <div class="content">
+            <div class="header">
+                <h1>Painel Administrativo</h1>
+                <button class="btn-exit" onclick="finalizarSessao()">Encerrar Sessão</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Integridade do Sistema</h3>
+                    <p>99.9%</p>
+                    <span class="status-badge">Estável</span>
+                </div>
+                <div class="card">
+                    <h3>Acessos Ativos</h3>
+                    <p>1.284</p>
+                </div>
+                <div class="card">
+                    <h3>Criptografia</h3>
+                    <p>AES-256</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; background: #fff; padding: 25px; border-radius: 12px; border-left: 5px solid var(--accent);">
+                <h3>Dados da Autenticação</h3>
+                <p>O sistema confirmou a validade do seu token:</p>
+                <code id="tokenValue" style="word-break: break-all; color: var(--accent); background: #f0f0f0; padding: 10px; display: block; border-radius: 5px;"></code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função de Proteção
+        function verificarProtecao() {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                // Se não houver token, redireciona para o login imediatamente
+                alert("Acesso não autorizado! Faça login primeiro.");
+                window.location.href = "index.html";
+            } else {
+                // Se houver, mostra o sistema e injeta o token na tela
+                document.getElementById("main-wrapper").style.display = "flex";
+                document.getElementById("tokenValue").innerText = token;
+            }
+        }
+
+        function finalizarSessao() {
+            if(confirm("Deseja realmente sair? O token será removido.")) {
+                localStorage.removeItem("token");
+                window.location.href = "index.html";
+            }
+        }
+
+        // Executa a verificação assim que a página abre
+        verificarProtecao();
+    </script>
+</body>
+</html>
